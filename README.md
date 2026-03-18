@@ -64,24 +64,15 @@ The project runs directly on the Linux host (no Docker). The `dist/` directory i
 **Setup:**
 1. Clone the repo
 2. `npm install --omit=dev`
-3. Run `node server.js` (suggest: manage with systemd)
+3. Symlink the unit file and enable the service:
+   ```bash
+   ln -s /home/jordan/subspace/subspace.service ~/.config/systemd/user/subspace.service
+   systemctl --user daemon-reload
+   systemctl --user enable --now subspace
+   ```
 4. HAProxy config should already proxy the hostname to `127.0.0.1:4000`
 
-**Systemd unit (if not already set up):**
-```ini
-[Unit]
-Description=subspace dashboard
-After=network.target
-
-[Service]
-WorkingDirectory=/home/jordan/subspace
-ExecStart=/usr/bin/node server.js
-Restart=always
-User=jordan
-
-[Install]
-WantedBy=multi-user.target
-```
+The unit file is at `subspace.service` in the repo root (symlinked from `~/.config/systemd/user/subspace.service`). Note the `ExecStart` path has the nvm Node version hardcoded — update it after upgrading Node (`nvm which current` gives the new path, then `systemctl --user daemon-reload && systemctl --user restart subspace`).
 
 **HAProxy** handles HTTPS and routes `subspace.tailb937d0.ts.net` to port 4000. Other services (Home Assistant, Music Assistant, Pi-hole, Kavita) each get their own HAProxy frontend with a different hostname.
 

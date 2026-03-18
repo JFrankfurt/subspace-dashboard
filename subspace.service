@@ -1,0 +1,14 @@
+[Unit]
+Description=Subspace service index dashboard
+After=network.target
+
+[Service]
+# Update this path after upgrading Node via nvm (nvm which current)
+ExecStart=/home/jordan/.nvm/versions/node/v24.14.0/bin/node /home/jordan/subspace/server.js
+Restart=always
+RestartSec=5
+Environment=NODE_ENV=production
+WorkingDirectory=/home/jordan/subspace
+
+[Install]
+WantedBy=default.target
